@@ -5,16 +5,20 @@
     <script src='grid.js'></script>
 
     <style>
+      #container {
+        width: 100%;
+      }
+
       #box {
         width: 400px;
         height: 400px;
-        border: 1px solid blue;
+        margin: 0 auto;
       }
 
       .tile {
         width: 30px;
         height: 30px;
-        border: 1px solid red;
+        border: 1px solid gray;
         float: left;
       }
 
@@ -24,6 +28,14 @@
 
       .selected {
         background-color: blue;
+      }
+
+      .victorious {
+        background-color: green;
+      }
+
+      .defeated {
+        background-color: red;
       }
     </style>
 
@@ -39,7 +51,7 @@
   <script>
     $(function() {
 
-      var grid = new Grid(9, 20, 'box');
+      var grid = new Grid(6, 9, 'box');
 
       grid.build();
 
