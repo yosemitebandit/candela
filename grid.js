@@ -6,9 +6,9 @@ function Grid(width, hiddenNumber, containerDiv) {
   this.containerDiv = containerDiv;  // id of the div containing the grid
 
   this.hiddenTiles = [];   // the tile IDs we're seeking
-  this.foundTiles = 0;
+  this.foundTiles = [];
 
-  this.visibleTime = 1800;
+  this.visibleTime = 1500;
 }
 
 Grid.prototype.build = function() {
@@ -63,16 +63,18 @@ Grid.prototype.enableGuessing = function() {
   */
   var _grid = this;
   $('.tile').click(function() {
-
     var guess = this.id.split('tile')[1]*1;  // get the id, convert to number
-    if (guess in oc(_grid.hiddenTiles)) {
-      $(this).addClass('selected');
-      _grid.foundTiles++;
 
-      if (_grid.foundTiles == _grid.hiddenNumber) {
+    if ((guess in oc(_grid.hiddenTiles)) && !(guess in oc(_grid.foundTiles))) {
+      $(this).addClass('selected');
+      _grid.foundTiles.push(guess);
+
+      if (_grid.foundTiles.length == _grid.hiddenTiles.length) {
         _grid.win();
       }
 
+    } else if (guess in oc(_grid.foundTiles)) {
+      // continue
     } else {
       _grid.lose();
     }
