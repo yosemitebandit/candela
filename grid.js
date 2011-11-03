@@ -1,5 +1,3 @@
-
-
 function Grid(width, hiddenNumber, containerDiv) {
   this.width = width;  // grid is square
   this.hiddenNumber = hiddenNumber;  // number of tiles to hide
@@ -12,69 +10,69 @@ function Grid(width, hiddenNumber, containerDiv) {
 }
 
 Grid.prototype.build = function() {
-  /* create a grid and hide some tiles
-  */
-
+  // create a grid
   for (var i=0; i<this.width*this.width; i++) {
     $('#'+this.containerDiv).append('<div class="tile", id="tile' + i + '"></div>');
-
-    if ((i+1) % this.width == 0) {   // next row 
+    
+    // make a new row every this.width
+    if ((i+1) % this.width == 0) {
       $('#'+this.containerDiv).append('<div class="clearfix"></div>');
     }
   }
-
 
   // loop until we've generated enough secret tiles
   while (this.hiddenTiles.length != this.hiddenNumber) {
     // create a secret tile in [0, width*width-1]
     var secretTile = Math.floor(Math.random()*(this.width*this.width));
-
-    if (this.hiddenTiles.indexOf(secretTile) == -1) {  // it's new
+    // keep it if it's new
+    if (this.hiddenTiles.indexOf(secretTile) == -1) {
       this.hiddenTiles.push(secretTile);
     }
   }
 
-  this.show();
+  // start the game
+  this.start();
 }
 
 
-Grid.prototype.show = function() {
-  /* show the hidden tiles, then hide em
-  */
-
+Grid.prototype.start = function() {
+  // show the hidden tiles
   for (var i in this.hiddenTiles) {
     $('#tile'+this.hiddenTiles[i]).addClass('selected');
   }
 
+  // hide the tiles and let the guessing begin
   var _grid = this
   setTimeout(function() {
     $('.tile').removeClass('selected');
-
     _grid.enableGuessing();
-
   }, this.visibleTime);
-    
 }
   
 
 Grid.prototype.enableGuessing = function() {
   /* create click handlers for the squares
-  * eh, maybe create them in build() then enable them or make the clicks visible?
   */
   var _grid = this;
-  $('.tile').click(function() {
-    var guess = this.id.split('tile')[1]*1;  // get the id, convert to number
+  $('.tile').click(function() {  
+    // get the id, convert to number
+    var guess = this.id.split('tile')[1]*1;
 
+    // we've found a previously-unfound hidden tile
     if ((guess in oc(_grid.hiddenTiles)) && !(guess in oc(_grid.foundTiles))) {
       $(this).addClass('selected');
       _grid.foundTiles.push(guess);
-
+      
+      // have we won yet?
       if (_grid.foundTiles.length == _grid.hiddenTiles.length) {
         _grid.win();
       }
 
+    // already found this one, do nothing
     } else if (guess in oc(_grid.foundTiles)) {
-      // continue
+      // boop
+
+    // bad guess, we lose
     } else {
       _grid.lose();
     }
@@ -84,30 +82,29 @@ Grid.prototype.enableGuessing = function() {
 
 
 Grid.prototype.lose = function() {
-  /* bad guess -- show all hidden tiles, return zero to someone
-  */
+  // show all hidden tiles
   for (var i in this.hiddenTiles) {
     $('#tile'+this.hiddenTiles[i]).addClass('defeated');
   }
+
   // remove click handlers
   $('.tile').unbind('click');
 }
 
 
 Grid.prototype.win = function() {
-  /* caught 'em all, woo
-  */
+  // show all hidden tiles
   for (var i in this.hiddenTiles) {
     $('#tile'+this.hiddenTiles[i]).addClass('victorious');
   }
+
   // lose the click handlers
   $('.tile').unbind('click');
 }
 
 
 function oc(a) {
-  /* snook.ca's in array checker
-  */
+  // snook.ca's trick for checking if a value's in an array -- make it a hash
   var o = {};
   for(var i=0;i<a.length;i++) {
     o[a[i]]='';
