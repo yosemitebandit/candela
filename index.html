@@ -3,6 +3,7 @@
   <head>
     <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js'></script>
     <script src='grid.js'></script>
+    <script src='game.js'></script>
 
     <style>
       #container {
@@ -50,12 +51,8 @@
 
   <script>
     $(function() {
-
-      var grid = new Grid(6, 9, 'box');
-
-      grid.build();
-
-
+      var game = new Game('box');
+      game.start();
     }); 
   </script>
 

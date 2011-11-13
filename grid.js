@@ -1,7 +1,8 @@
-function Grid(width, hiddenNumber, containerDiv) {
+function Grid(width, hiddenNumber, game) {
   this.width = width;  // grid is square
   this.hiddenNumber = hiddenNumber;  // number of tiles to hide
-  this.containerDiv = containerDiv;  // id of the div containing the grid
+  this.containerDiv = game.containerDiv;  // id of the div containing the grid
+  this.game = game;
 
   this.hiddenTiles = [];   // the tile IDs we're seeking
   this.foundTiles = [];
@@ -89,6 +90,12 @@ Grid.prototype.lose = function() {
 
   // remove click handlers
   $('.tile').unbind('click');
+
+  // tell the high-level game that all is lost
+  var _game = this.game;
+  setTimeout(function() {
+    _game.lose()
+  }, 2000);
 }
 
 
@@ -100,6 +107,17 @@ Grid.prototype.win = function() {
 
   // lose the click handlers
   $('.tile').unbind('click');
+
+  // tell the high-level game that we won
+  var _game = this.game;
+  setTimeout(function() {
+    _game.win()
+  }, 2000);
+}
+
+
+Grid.prototype.destroy = function() {
+  $('#' + this.containerDiv).html('');
 }
 
 
